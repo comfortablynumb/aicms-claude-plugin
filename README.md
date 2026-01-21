@@ -23,7 +23,7 @@ When AI assistants generate code, they often miss the **why** behind the code. A
 
 ```bash
 # Add the AICMS marketplace
-/plugin marketplace add aicms/aicms
+/plugin marketplace add git@github.com:comfortablynumb/aicms-claude-plugin.git
 
 # Install the plugin
 /plugin install aicms
