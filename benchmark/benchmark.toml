@@ -1,0 +1,37 @@
+# AICMS Benchmark Configuration
+
+[api]
+# Claude model to use for benchmarks
+model = "claude-sonnet-4-20250514"
+# Maximum tokens in response
+max_tokens = 4096
+# Temperature (0.0 for deterministic results)
+temperature = 0.0
+# Rate limit (requests per minute)
+requests_per_minute = 60
+
+[run]
+# Number of repetitions per task (higher = more statistical validity)
+repetitions = 1
+# Dry run mode (no actual API calls)
+dry_run = false
+
+[run.filter]
+# Optional: Filter by categories
+# categories = ["implement", "bugfix"]
+# Optional: Filter by languages
+# languages = ["rust", "python"]
+# Optional: Filter by difficulty
+# difficulties = ["easy", "medium"]
+# Optional: Filter by specific task IDs
+# task_ids = ["impl-rust-factorial"]
+
+[paths]
+# Directory containing task TOML files
+corpus_dir = "corpus"
+# Directory containing prompt templates
+prompts_dir = "prompts"
+# Output directory for results
+results_dir = "results"
+# Path to AICMS SKILL.md file
+skill_file = "../skills/aicms/SKILL.md"

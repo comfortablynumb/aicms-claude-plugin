@@ -1,0 +1,23 @@
+# Basic AICMS linting workflow
+# Copy this file to .github/workflows/aicms.yml in your project
+
+name: AICMS Validation
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: AICMS Check
+        uses: aicms/check@v1
+        with:
+          path: 'src/'
+          require-intent: 'true'
+          require-module-intent: 'false'

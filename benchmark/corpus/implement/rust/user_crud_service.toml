@@ -1,0 +1,36 @@
+[task]
+id = "impl-rust-user-crud"
+name = "User CRUD Service with Repository Pattern"
+category = "implement"
+language = "rust"
+difficulty = "hard"
+description = """
+Implement a User management service in Rust following clean architecture principles.
+
+Domain:
+- Users have an ID, email address, name, and active status
+- User IDs should use a newtype pattern for type safety
+
+Business Rules:
+- Email addresses must be valid (contain @ and be non-empty)
+- Names must be between 1 and 100 characters
+- Email addresses must be unique across all users
+- Users cannot change their email to one already used by another user
+
+Architecture Requirements:
+- Use the repository pattern for data access (define a trait)
+- The service should accept the repository via dependency injection (generic type parameter)
+- Use request objects for create and update operations
+- Use a custom error type to represent different failure cases (not found, duplicate email, validation errors)
+
+Functionality Needed:
+- Create new users
+- Retrieve a user by their ID
+- Find a user by their email
+- List all users
+- Update user information (email, name, active status)
+- Delete users
+- Generate unique IDs for new users
+
+Include comprehensive tests with 100% code coverage.
+"""

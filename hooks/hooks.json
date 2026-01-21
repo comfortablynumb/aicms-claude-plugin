@@ -1,0 +1,25 @@
+{
+  "hooks": [
+    {
+      "name": "aicms-validate",
+      "event": "pre_commit",
+      "command": "aicms lint --require-intent {{staged_files}}",
+      "description": "Ensure all functions have @ai:intent annotation",
+      "enabled": false
+    },
+    {
+      "name": "aicms-validate-strict",
+      "event": "pre_commit",
+      "command": "aicms lint --require-intent --require-module-intent {{staged_files}}",
+      "description": "Strict: Require @ai:intent on functions and @ai:module:intent on files",
+      "enabled": false
+    },
+    {
+      "name": "aicms-confidence-check",
+      "event": "pre_commit",
+      "command": "aicms lint --warn-low-confidence --confidence-threshold 0.8 {{staged_files}}",
+      "description": "Warn on functions with confidence < 0.8",
+      "enabled": false
+    }
+  ]
+}

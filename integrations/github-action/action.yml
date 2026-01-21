@@ -1,0 +1,155 @@
+name: 'AICMS Check'
+description: 'Validate AICMS annotations and detect breaking contract changes'
+author: 'AICMS'
+
+branding:
+  icon: 'check-circle'
+  color: 'blue'
+
+inputs:
+  path:
+    description: 'Path to lint (file or directory)'
+    required: false
+    default: '.'
+  require-intent:
+    description: 'Require @ai:intent on all functions'
+    required: false
+    default: 'true'
+  require-module-intent:
+    description: 'Require @ai:module:intent on all files'
+    required: false
+    default: 'false'
+  warn-low-confidence:
+    description: 'Warn on functions with low confidence scores'
+    required: false
+    default: 'true'
+  confidence-threshold:
+    description: 'Minimum confidence threshold (0.0-1.0)'
+    required: false
+    default: '0.7'
+  fail-on-warning:
+    description: 'Fail the check if warnings are found'
+    required: false
+    default: 'false'
+  check-breaking-changes:
+    description: 'Check for breaking contract changes in PR'
+    required: false
+    default: 'false'
+  base-branch:
+    description: 'Base branch for breaking change detection'
+    required: false
+    default: 'main'
+  output-format:
+    description: 'Output format: text, json, or json-pretty'
+    required: false
+    default: 'text'
+
+outputs:
+  errors:
+    description: 'Number of errors found'
+    value: ${{ steps.lint.outputs.errors }}
+  warnings:
+    description: 'Number of warnings found'
+    value: ${{ steps.lint.outputs.warnings }}
+  breaking-changes:
+    description: 'Number of breaking contract changes found'
+    value: ${{ steps.diff.outputs.breaking }}
+  result:
+    description: 'Full lint result in JSON format'
+    value: ${{ steps.lint.outputs.result }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Rust
+      uses: actions-rust-lang/setup-rust-toolchain@v1
+      with:
+        toolchain: stable
+
+    - name: Build AICMS CLI
+      shell: bash
+      run: |
+        cd ${{ github.action_path }}/../../parser
+        cargo build --release
+        echo "${{ github.action_path }}/../../parser/target/release" >> $GITHUB_PATH
+
+    - name: Run AICMS Lint
+      id: lint
+      shell: bash
+      run: |
+        ARGS=""
+        if [ "${{ inputs.require-intent }}" = "true" ]; then
+          ARGS="$ARGS --require-intent"
+        fi
+        if [ "${{ inputs.require-module-intent }}" = "true" ]; then
+          ARGS="$ARGS --require-module-intent"
+        fi
+        if [ "${{ inputs.warn-low-confidence }}" = "true" ]; then
+          ARGS="$ARGS --warn-low-confidence --confidence-threshold ${{ inputs.confidence-threshold }}"
+        fi
+
+        # Run lint and capture output
+        set +e
+        RESULT=$(aicms lint ${{ inputs.path }} $ARGS --format json-pretty 2>&1)
+        EXIT_CODE=$?
+        set -e
+
+        # Parse errors and warnings from JSON
+        ERRORS=$(echo "$RESULT" | jq -r '.errors // 0')
+        WARNINGS=$(echo "$RESULT" | jq -r '.warnings // 0')
+
+        echo "errors=$ERRORS" >> $GITHUB_OUTPUT
+        echo "warnings=$WARNINGS" >> $GITHUB_OUTPUT
+        echo "result<<EOF" >> $GITHUB_OUTPUT
+        echo "$RESULT" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
+
+        # Display human-readable output
+        aicms lint ${{ inputs.path }} $ARGS --format ${{ inputs.output-format }}
+
+        # Determine exit code
+        if [ "$EXIT_CODE" -ne 0 ]; then
+          exit 1
+        fi
+        if [ "${{ inputs.fail-on-warning }}" = "true" ] && [ "$WARNINGS" -gt 0 ]; then
+          exit 1
+        fi
+
+    - name: Check Breaking Changes
+      id: diff
+      if: inputs.check-breaking-changes == 'true' && github.event_name == 'pull_request'
+      shell: bash
+      run: |
+        # Get list of changed files
+        git fetch origin ${{ inputs.base-branch }}
+        CHANGED_FILES=$(git diff --name-only origin/${{ inputs.base-branch }}...HEAD | grep -E '\.(rs|py|ts|js|go|java|c|cpp|h|hpp)$' || true)
+
+        BREAKING_COUNT=0
+
+        for FILE in $CHANGED_FILES; do
+          if [ -f "$FILE" ]; then
+            # Get old version from base branch
+            git show origin/${{ inputs.base-branch }}:$FILE > /tmp/old_version 2>/dev/null || continue
+
+            # Run diff
+            set +e
+            DIFF_RESULT=$(aicms diff /tmp/old_version $FILE --format json 2>&1)
+            set -e
+
+            # Count breaking changes
+            FILE_BREAKING=$(echo "$DIFF_RESULT" | jq -r '.breaking_count // 0')
+            BREAKING_COUNT=$((BREAKING_COUNT + FILE_BREAKING))
+
+            if [ "$FILE_BREAKING" -gt 0 ]; then
+              echo "::warning file=$FILE::$FILE_BREAKING breaking contract change(s) detected"
+              aicms diff /tmp/old_version $FILE --format text
+            fi
+          fi
+        done
+
+        echo "breaking=$BREAKING_COUNT" >> $GITHUB_OUTPUT
+
+        if [ "$BREAKING_COUNT" -gt 0 ]; then
+          echo "::error::$BREAKING_COUNT breaking contract change(s) detected in this PR"
+          exit 1
+        fi

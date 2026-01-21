@@ -1,0 +1,6 @@
+/.idea
+/.claude
+/benchmark/results/*
+/nul
+/benchmark/target
+/parser/target

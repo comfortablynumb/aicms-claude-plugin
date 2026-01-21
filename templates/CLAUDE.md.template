@@ -1,0 +1,40 @@
+# Project Context
+
+<!-- Import the AICMS skill - adjust the path based on where you copied SKILL.md -->
+@.claude/skills/aicms/SKILL.md
+
+## AICMS Configuration
+
+When working in this codebase:
+
+1. **Read existing annotations**: Respect all `@ai:*` annotations in the code
+2. **Add annotations to new code**: Every new function should have at minimum:
+   - `@ai:intent` (required)
+   - `@ai:effects` if the function has side effects
+   - `@ai:example` with at least one test case
+3. **Validate on modification**: When modifying annotated functions, verify the implementation still matches the spec
+4. **Flag discrepancies**: Report any mismatch between annotations and implementation
+
+## Annotation Requirements
+
+<!-- Customize based on your project's needs -->
+
+### Required for all functions:
+- `@ai:intent`
+
+### Required for public APIs:
+- `@ai:intent`
+- `@ai:pre` (if any input constraints)
+- `@ai:post` (if any return value guarantees)
+- `@ai:example` (at least one)
+
+### Required for functions with side effects:
+- `@ai:effects`
+
+### Recommended for complex logic:
+- `@ai:confidence`
+- `@ai:needs_review`
+
+## Project-Specific Notes
+
+<!-- Add any project-specific instructions here -->

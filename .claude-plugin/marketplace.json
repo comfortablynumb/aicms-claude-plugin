@@ -1,0 +1,18 @@
+{
+  "name": "aicms-marketplace",
+  "description": "Official AICMS plugin marketplace",
+  "version": "1.0.0",
+  "owner": {
+    "name": "AICMS Contributors",
+    "url": "https://github.com/aicms"
+  },
+  "plugins": [
+    {
+      "name": "aicms",
+      "source": ".",
+      "description": "AI-First Code Metadata Specification - structured annotations for AI-assisted development",
+      "version": "1.0.0",
+      "tags": ["ai", "annotations", "contracts", "code-generation"]
+    }
+  ]
+}

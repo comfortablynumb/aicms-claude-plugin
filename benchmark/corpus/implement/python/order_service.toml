@@ -1,0 +1,42 @@
+[task]
+id = "impl-python-order-service"
+name = "Order Processing Service with Repository Pattern"
+category = "implement"
+language = "python"
+difficulty = "hard"
+description = """
+Implement an Order processing service in Python following clean architecture principles.
+
+Domain:
+- Orders belong to customers and contain line items (product, quantity, unit price)
+- Orders have a status lifecycle: pending, confirmed, shipped, delivered, or cancelled
+- Order totals are calculated from the sum of line item amounts
+
+Business Rules:
+- Orders must have a customer and at least one item
+- All item quantities must be positive
+- Before creating an order, inventory must be checked and reserved for each item
+- Status transitions follow a state machine:
+  - New orders start as pending
+  - Pending orders can be confirmed or cancelled
+  - Confirmed orders can be shipped or cancelled
+  - Shipped orders can only be delivered
+  - Delivered and cancelled are terminal states
+- When an order is cancelled, reserved inventory must be released
+
+Architecture Requirements:
+- Use Python protocols (typing.Protocol) for repository interfaces
+- Separate domain models (dataclasses) from service logic
+- Use dependency injection - the service receives repositories via constructor
+- Use custom exception classes for different error cases
+- Organize code into modules: models, repository protocols, and service
+
+Functionality Needed:
+- Create orders with inventory reservation
+- Retrieve orders by ID or by customer
+- Progress orders through the status lifecycle (confirm, ship, deliver)
+- Cancel orders with inventory release
+- Generate unique order IDs
+
+Include comprehensive tests with 100% code coverage.
+"""
