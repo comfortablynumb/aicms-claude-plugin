@@ -9,7 +9,7 @@
   "plugins": [
     {
       "name": "aicms",
-      "source": ".",
+      "source": "./",
       "description": "AI-First Code Metadata Specification - structured annotations for AI-assisted development",
       "version": "1.0.0",
       "tags": ["ai", "annotations", "contracts", "code-generation"]
