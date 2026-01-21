@@ -1,7 +1,5 @@
 # AICMS Project Context
 
-@.claude/skills/aicms/SKILL.md
-
 ## Project Overview
 
 AICMS (AI-First Code Metadata Specification) is a language-agnostic standard for embedding AI-consumable metadata at the function level in source code. Distributed as a Claude Code plugin.
