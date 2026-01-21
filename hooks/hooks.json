@@ -1,25 +1,31 @@
 {
-  "hooks": [
-    {
-      "name": "aicms-validate",
-      "event": "pre_commit",
-      "command": "aicms lint --require-intent {{staged_files}}",
-      "description": "Ensure all functions have @ai:intent annotation",
-      "enabled": false
+  "hooks": {
+    "aicms-validate": {
+      "matcher": "**/*.{rs,py,ts,js,go,java,c,cpp,h}",
+      "hooks": [
+        {
+          "type": "preCommit",
+          "command": "aicms lint --require-intent $STAGED_FILES"
+        }
+      ]
     },
-    {
-      "name": "aicms-validate-strict",
-      "event": "pre_commit",
-      "command": "aicms lint --require-intent --require-module-intent {{staged_files}}",
-      "description": "Strict: Require @ai:intent on functions and @ai:module:intent on files",
-      "enabled": false
+    "aicms-validate-strict": {
+      "matcher": "**/*.{rs,py,ts,js,go,java,c,cpp,h}",
+      "hooks": [
+        {
+          "type": "preCommit",
+          "command": "aicms lint --require-intent --require-module-intent $STAGED_FILES"
+        }
+      ]
     },
-    {
-      "name": "aicms-confidence-check",
-      "event": "pre_commit",
-      "command": "aicms lint --warn-low-confidence --confidence-threshold 0.8 {{staged_files}}",
-      "description": "Warn on functions with confidence < 0.8",
-      "enabled": false
+    "aicms-confidence-check": {
+      "matcher": "**/*.{rs,py,ts,js,go,java,c,cpp,h}",
+      "hooks": [
+        {
+          "type": "preCommit",
+          "command": "aicms lint --warn-low-confidence --confidence-threshold 0.8 $STAGED_FILES"
+        }
+      ]
     }
-  ]
+  }
 }
