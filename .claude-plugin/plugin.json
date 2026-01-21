@@ -25,6 +25,5 @@
     "./commands/tests.md",
     "./commands/contracts.md",
     "./commands/diff.md"
-  ],
-  "hooks": "./hooks/hooks.json"
+  ]
 }
