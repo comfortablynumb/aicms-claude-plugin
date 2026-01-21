@@ -17,60 +17,14 @@
     "specification"
   ],
   "homepage": "https://github.com/aicms/aicms",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/aicms/aicms.git"
-  },
-  "skills": [
-    {
-      "name": "aicms",
-      "path": "skills/aicms",
-      "description": "Core AICMS specification for reading and writing @ai:* annotations"
-    }
-  ],
+  "repository": "https://github.com/aicms/aicms",
+  "skills": "./skills/",
   "commands": [
-    {
-      "name": "implement",
-      "path": "commands/implement.md",
-      "description": "Generate implementation for stub functions with AICMS specs"
-    },
-    {
-      "name": "infer",
-      "path": "commands/infer.md",
-      "description": "Infer AICMS annotations from existing unannotated code"
-    },
-    {
-      "name": "tests",
-      "path": "commands/tests.md",
-      "description": "Generate unit tests from AICMS annotations"
-    },
-    {
-      "name": "contracts",
-      "path": "commands/contracts.md",
-      "description": "Generate runtime contract validation wrappers"
-    },
-    {
-      "name": "diff",
-      "path": "commands/diff.md",
-      "description": "Detect breaking contract changes between versions"
-    }
+    "./commands/implement.md",
+    "./commands/infer.md",
+    "./commands/tests.md",
+    "./commands/contracts.md",
+    "./commands/diff.md"
   ],
-  "hooks": "hooks/hooks.json",
-  "tools": {
-    "cli": {
-      "name": "aicms",
-      "description": "AICMS CLI for linting and extracting annotations",
-      "install": "cargo install --path parser",
-      "commands": ["lint", "extract", "parse", "diff"]
-    }
-  },
-  "dependencies": {
-    "optional": [
-      {
-        "name": "aicms-cli",
-        "description": "Rust CLI for programmatic linting and extraction",
-        "install": "cargo install --path parser"
-      }
-    ]
-  }
+  "hooks": "./hooks/hooks.json"
 }
